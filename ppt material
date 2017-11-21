@@ -1,0 +1,97 @@
+456 - custom view bar ball bricks pixel by pixel
+789 - game canvas view
+=======================================================================
+
+**************************************************************************************
+Speak this:
+The android part we will skip. It's just an activity. 
+Anything you see on an android is a view. 
+The whole screen is a custom view (Inheriting the base view class and overriding onDraw() 
+to draw our own custom view pixel by pixel)
+We will use some classes in that custom view so lets look at them first
+**************************************************************************************
+
+4 - Title - Brick Class
+Member variables:
+Top: Stores the top most coordinate of the brick being shown
+Bottom: Stores the bottom most coordinate of the brick being shown
+Left: Stores the left most coordinate of the brick being shown
+Right: Stores the right most coordinate of the brick being shown 
+paint: Stores the paint object which stores the color of the brick to be drawn
+
+Stage Class
+Functions: 
+stage_level_one(Canvas,brickX,brickY,List): This creates the top,left,bottom,right coordinates of each brick
+	of level one and stores them in the list.
+stage_level_two(Canvas,brickX,brickY,List): This creates the top,left,bottom,right coordinates of each brick
+	of level two and stores them in the list.
+
+=======================================================================
+
+5 - Title - Bar Class
+Member variables:
+barTop: Stores the top most coordinate of the bar being shown
+barBottom: Stores the bottom most coordinate of the bar being shown
+barLeft: Stores the left most coordinate of the bar being shown
+barRight: Stores the right most coordinate of the bar being shown
+
+Functions:
+setBar(Canvas): Sets the bar in the middle of the screen at the bottom with some padding
+drawBar(Canvas,Paint): draws the bar using the top,left,bottom,right coordinates we have and the paint object to color the bar. 
+
+=======================================================================
+
+6 - Title - Ball Class
+
+Member variables:
+ballAvailable: Tells if the ball is on the screen or not
+x: current x-coordinate of the ball
+y: current y-coordinate of the ball
+radius: radius of the ball
+xStep: how much the ball moves in x-direction in one frame
+yStep: how much the ball moves in y-direction in one frame
+
+Functions:
+setBall(Canvas, Bar): Initializes the variables for game start placing the ball on top of mid of bar
+drawBall(Canvas,Paint): Draws a circle at the x,y coordinate
+nextPos(Canvas,Bar,Paint): Calculates the next position of x,y coordinate according to current positions.
+ballBrickCollision(List,Ball): Detectes the ball brick collision using their current coordinates variables values.
+
+=======================================================================
+
+7,8,9 - title - game canvas custom view
+This is the custom view class which is our whole screen.
+
+Member variables:
+
+state: State of the game - creating, to start, live, end
+level: current level of the gameplay
+life: how many lifes remain
+gameOver: if the game is over or not
+brickX, brickY: stores the width and height of each brick
+score: the current score of the player
+canvas: the canvas we are drawing on
+createGame: if the game is to be created i.e. the bricks, ball and bar is to be drawn at initial state
+paint: the paint of how we draw the objects
+bar: the bar object
+ball: the ball object
+touchPoint: this stores the x-coordinate of your touch on the screen to decide where to move the bar
+gameStart: if the game is started or not
+bricks: stores the list of brick objects currently not broken and is being shown
+stage: to create the brick list initially
+
+Functions: 
+
+OnTouchListener(): We set this such that if you touch the left half of the screen, the bar moves left and same for right. Also the ball moves if the game isn't started.
+
+onDraw(): This function is called every frame. We have following cases here:
+	if game isn't started, set all objects and draw them
+	if game is live, find next position of ball
+	if game is created but not started show a text to the user to ask to tap to start
+	if the game is to be created, make the bricks using stage
+	detect if ball brick collision can happen and increase score if it can
+	if the brick list size is 0, move to next level
+	if the ball isn't available then minus a life and set gameStart = true
+	if life==0 or gameOver is true, restart the game and initialize everything again to restart the game
+	call invalidate to draw the next frame
+
